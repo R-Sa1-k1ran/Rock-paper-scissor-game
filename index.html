@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Rock, Paper, Scissors</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            background: linear-gradient(rgb(251, 235, 117),rgb(241, 118, 250));
+        }
+        #game-container {
+            margin-top: 30px;
+        }
+        h1 {
+            margin-bottom: 20px;
+        }
+        #images {
+            display: flex;
+            justify-content: center
+        }
+        img {
+            height: 120px;
+            width: 120px;
+            border-radius: 50%;
+            margin: 15px;
+        }
+        #choices {
+            display: flex;
+            justify-content: center;
+            gap: 23px;
+        }
+        button {
+            padding: 15px 30px;
+            margin-top: 13px;
+            font-size: 18px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        #rock {
+            background-color: #505c6a;
+            color: white;
+        }
+        #paper {
+            background-color: #68bccd;
+            color: white;
+        }
+        #scissors {
+            background-color: #aeac79;
+            color: white;
+        }
+        .scores{
+            display: flex;
+            justify-content: center;
+        }
+        #scores{
+            margin-top: -10px;
+        }
+        h3{
+            margin: 30px;
+        }
+        #result {
+            margin-top: 20px;
+            font-size: 20px;
+        }
+        #final-result {
+            margin-top: 20px;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        #refresh-button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #fcaa58;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="game-container">
+        <h1>Rock, Paper, Scissors - GAME</h1>
+        <h5>Give a try for 10 rounds, </h5>
+        <div id="images">
+            <img src="./rock.jpg" alt="rock">
+            <img src="./paper.jpg" alt="paper">
+            <img src="./scissor.jpg" alt="scissor">
+        </div>
+        <div id="choices">
+            <button id="rock">Rock</button>
+            <button id="paper">Paper</button>
+            <button id="scissors">Scissors</button>
+        </div>
+        <div class="scores">
+            <div class="leftContent">
+                <h3>Your choice :<span id='yChoice'> -</span></h3>
+            </div>
+            <div class="rightContent">
+                <h3>Computer Choice :<span id='cChoice'> -</span></h3>
+            </div>
+        </div>
+        <div class="scores" id="scores">
+            <div class="leftContent">
+                <h3>Your Score :<span id='yScore'> 0</span></h3>
+            </div>
+            <div class="rightContent">
+                <h3>Computer Score :<span id='cScore'> 0</span></h3>
+            </div>
+        </div>
+        <p id="result"></p>
+        <p id="final-result"></p>
+        <button id="refresh-button" disabled>Play Again</button>
+    </div>
+
+    <script>
+        const choices = ['rock', 'paper', 'scissors'];
+        const result = document.getElementById('result');
+        const finalResult = document.getElementById('final-result');
+        const refreshButton = document.getElementById('refresh-button');
+        let cScore = document.getElementById("cScore");
+        let yScore = document.getElementById("yScore");
+        let cChoice = document.getElementById("cChoice");
+        let yChoice = document.getElementById("yChoice");
+
+        let playerScore = 0;
+        let computerScore = 0;
+        let round = 1;
+
+        function getComputerChoice() {
+            const randomIndex = Math.floor(Math.random() * choices.length);
+            cChoice.innerHTML= choices[randomIndex] ;
+            return choices[randomIndex]; 
+        }
+
+        function playRound(playerSelection, computerSelection) {
+            if (playerSelection === computerSelection) {
+                result.textContent = ` Round ${round},    it's a tie!`;
+            } else if (
+                (playerSelection === 'rock' && computerSelection === 'scissors') ||
+                (playerSelection === 'paper' && computerSelection === 'rock') ||
+                (playerSelection === 'scissors' && computerSelection === 'paper')
+            ) {
+                result.textContent = ` Round ${round},   You win!`;
+                playerScore++;
+                yScore.innerHTML = playerScore;
+                
+            } else {
+                result.textContent = ` Round ${round},   You lose!`;
+                computerScore++;
+                cScore.innerHTML = computerScore;
+                
+            }
+        }
+
+        function checkGameEnd() {
+            if (round === 10) {
+                if (playerScore > computerScore) {
+                    finalResult.textContent = `You win the game,  Great!`;
+                    finalResult.style.color="green"
+                } else if (playerScore < computerScore) {
+                    finalResult.textContent = `Computer wins the game,  Circle Back!`;
+                    finalResult.style.color="red"
+                } else {
+                    finalResult.textContent = "It's a draw!";
+                }
+                buttons.forEach(button => {
+                    button.disabled = true;
+                });
+                refreshButton.disabled = false;
+            } else {
+                round++;
+            }
+        }
+
+        const buttons = document.querySelectorAll('button');
+        buttons.forEach(button => {
+            button.addEventListener('click', () => {
+                const playerSelection = button.id;
+                yChoice.innerHTML = playerSelection;
+                const computerSelection = getComputerChoice();
+                playRound(playerSelection, computerSelection);
+                checkGameEnd();
+            });
+        });
+
+        refreshButton.addEventListener('click', () => {
+            playerScore = 0;
+            computerScore = 0;
+            round = 1;
+            result.textContent = "";
+            finalResult.textContent = "";
+            buttons.forEach(button => {
+                button.disabled = false;
+            });
+            refreshButton.disabled = true;
+        });
+    </script>
+
+</body>
+</html>
